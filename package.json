@@ -1,12 +1,16 @@
 {
   "devDependencies": {
+    "@babel/preset-react": "^7.0.0",
     "@symfony/webpack-encore": "^0.26.0",
     "bootstrap": "3",
     "copy-webpack-plugin": "^4.4.1",
     "core-js": "2",
     "eslint": "^7.24.0",
+    "eslint-plugin-react": "^7.23.2",
     "font-awesome": "4",
     "jquery": "^3.3.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "sass": "^1.29.0",
     "sass-loader": "^7.0.0",
     "sweetalert2": "^7.11.0",
