@@ -13,27 +13,37 @@ export default class RepLogApp extends Component {
                 { id: uuid(), reps: 25, itemLabel: 'My Laptop', totalWeightLifted: 112.5 },
                 { id: uuid(), reps: 10, itemLabel: 'Big Fat Cat', totalWeightLifted: 180 },
                 { id: uuid(), reps: 4, itemLabel: 'Big Fat Cat', totalWeightLifted: 72 }
-            ]
+            ],
+            numberOfHearts: 1
         }
 
         this.handleRowClick = this.handleRowClick.bind(this);
-        this.handleNewItemSubmit = this.handleNewItemSubmit.bind(this);
+        this.handleAddRepLog = this.handleAddRepLog.bind(this);
+        this.handleHeartChange = this.handleHeartChange.bind(this);
     }
 
     handleRowClick(repLogId){
         this.setState({highlightedRowId:repLogId});
     }
 
-    handleNewItemSubmit(itemLabel, reps){
-        const repLogs = this.state.repLogs;
+    handleAddRepLog(itemLabel, reps){    
         const newRep = {
             id: uuid(),
             reps: reps,
             itemLabel: itemLabel,
             totalWeightLifted: Math.floor(Math.random() * 50)
         }
-        repLogs.push(newRep);
-        this.setState({repLogs: repLogs})
+
+        this.setState(prevState => {
+            const newRepLogs = [...prevState.repLogs, newRep];
+
+            return {repLogs: newRepLogs}
+        });
+
+    }
+
+    handleHeartChange(heartCount){
+        this.setState({numberOfHearts: heartCount})
     }
 
     render() {
@@ -43,7 +53,8 @@ export default class RepLogApp extends Component {
                 {...this.props}
                 {...this.state}
                 onRowClick={this.handleRowClick}
-                onNewItemSubmit={this.handleNewItemSubmit}
+                onAddRepLog={this.handleAddRepLog}
+                onHeartChange={this.handleHeartChange}
             />
         )
     }
