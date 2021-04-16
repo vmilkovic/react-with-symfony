@@ -1,6 +1,7 @@
 /node_modules
 /node_modules/*
 /public/build/*
+/*.log
 
 ###> symfony/framework-bundle ###
 .env
