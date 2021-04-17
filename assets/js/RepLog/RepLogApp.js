@@ -15,6 +15,7 @@ export default class RepLogApp extends Component {
             isLoaded: false,
             isSavingNewRepLog: false,
             successMessage: '',
+            newRepLogValidationErrorMessage: '',
         }
 
         this.succesMessageTimeoutHandle = 0;
@@ -53,19 +54,47 @@ export default class RepLogApp extends Component {
             isSavingNewRepLog: true
         })
 
+        const newState = {
+            isSavingNewRepLog: false,
+        };
+
         createRepLog(newRep)
             .then(repLog => {
                 this.setState(prevState => {
                     // Add to array without state mutation
                     const newRepLogs = [...prevState.repLogs, repLog];
 
-                    return {
+                    /* return Object.assign({
                         repLogs: newRepLogs,
-                        isSavingNewRepLog: false,
-                    };
+                        newRepLogValidationErrorMessage: '',
+                    }, newState); */
+
+                    return {
+                        ...newState,
+                        repLogs: newRepLogs,
+                        newRepLogValidationErrorMessage: ''
+                    } 
+                    
                 });
 
                 this.setSuccessMessage('Rep Log Saved');
+            })
+            .catch(error => {
+                error.response.json().then(erorrsData => {
+                    const errors = erorrsData.errors;
+                    const firstError = errors[Object.keys(errors)[0]];
+                    
+                    
+                    /* return Object.assign({
+                        repLogs: newRepLogs,
+                        newRepLogValidationErrorMessage: firstError,
+                    }, newState); */
+
+                    this.setState({
+                        ...newState,
+                        newRepLogValidationErrorMessage: firstError,
+                    });
+                })
             });
     }
 
@@ -98,7 +127,8 @@ export default class RepLogApp extends Component {
 
                     // State is not mutated beacouse we add is deleting to current repLog
                     // and then the repLog we pass to a new object that we set to repLogs state
-                    return Object.assign({}, repLog, {isDeleting: true})
+                    // return Object.assign({}, repLog, {isDeleting: true})
+                    return {...repLog, isDeleting: true}
                 })
             }
         });
@@ -132,5 +162,10 @@ export default class RepLogApp extends Component {
 }
 
 RepLogApp.propTypes = {
-    withHeart: PropTypes.bool
+    withHeart: PropTypes.bool,
+    itemOptions: PropTypes.array,
+}
+
+RepLogApp.defaulProps = {
+    itemOptions: []
 }

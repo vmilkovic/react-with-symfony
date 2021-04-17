@@ -2,26 +2,39 @@
 
 namespace App\Controller;
 
-use App\Entity\RepLog;
 use App\Entity\User;
+use App\Entity\RepLog;
 use App\Form\Type\RepLogType;
-use App\Repository\RepLogRepository;
 use App\Repository\UserRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use App\Repository\RepLogRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class LiftController extends BaseController
 {
     /**
      * @Route("/lift", name="lift")
      */
-    public function indexAction(Request $request, RepLogRepository $replogRepo, UserRepository $userRepo)
+    public function indexAction(Request $request, RepLogRepository $replogRepo, UserRepository $userRepo, TranslatorInterface $translator)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
+        $repLogAppProps = [
+            'withHeart' => true,
+            'itemOptions' => [],
+        ];
+        foreach (RepLog::getThingsYouCanLiftChoices() as $label => $id) {
+            $repLogAppProps['itemOptions'][] = [
+                'id' => $id,
+                'text' => $translator->trans($label),
+            ];
+        }
+
         return $this->render('lift/index.html.twig', array(
             'leaderboard' => $this->getLeaders($replogRepo, $userRepo),
+            'repLogAppProps' => $repLogAppProps,
         ));
     }
 
